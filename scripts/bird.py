@@ -10,6 +10,8 @@ class Bird():
         self.velocity = [0, 0]
         self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
         self.onground = False
+        self.collided = False
+        self.collidingtime = 3
 
     def update(self, movement=(0, 0)):
         frame_movement = (movement[0] + self.velocity[0], movement[1] + self.velocity[1])

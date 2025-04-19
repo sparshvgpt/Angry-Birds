@@ -1,4 +1,5 @@
 import pygame
+import time
 
 class Block:
     def __init__(self, game, pos, block_type):
@@ -14,6 +15,14 @@ class Block:
         for list in game.birds:
             for bird in list:
                 if bird.rect.colliderect(self.rect):
+                    if (bird.health > 0): 
+                        if ((bird.type == 'yellow' and self.block_type == 'wood') or (bird.type == 'blue' and self.block_type == 'ice') or (bird.type == 'bomb' and self.block_type == 'stone')):
+                            self.health -= 50
+                        else:
+                            self.health -= 25
+                        bird.health -= 1
+                        bird.collided = True
+                        bird.collidingtime = time.time()
                     # Get centers
                     bird_cx, bird_cy = bird.rect.center
                     block_cx, block_cy = self.rect.center
@@ -57,3 +66,5 @@ class Block:
             surf.blit(self.game.images[self.block_type][self.block_type + '50'], self.pos)
         elif self.health > 0:
             surf.blit(self.game.images[self.block_type][self.block_type + '25'], self.pos)
+        else:
+            self.rect = pygame.Rect(0, 0, 0, 0)
