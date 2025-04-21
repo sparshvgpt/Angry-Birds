@@ -17,9 +17,9 @@ class Block:
                 if bird.rect.colliderect(self.rect):
                     if (bird.health > 0): 
                         if ((bird.type == 'yellow' and self.block_type == 'wood') or (bird.type == 'blue' and self.block_type == 'ice') or (bird.type == 'bomb' and self.block_type == 'stone')):
-                            self.health -= 50
+                            self.health -= 100
                         else:
-                            self.health -= 25
+                            self.health -= 50
                         bird.health -= 1
                         bird.collided = True
                         bird.collidingtime = time.time()

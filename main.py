@@ -1,6 +1,5 @@
 import pygame
 import sys
-import os
 import math
 import numpy as np
 import scripts.utils as utils
@@ -22,6 +21,11 @@ class Game:
 
         self.images = {
             'loadingscreen': utils.LoadScaledImage('loadingbg.png', removebg=False),
+            'mainmenu': {'bg': utils.LoadScaledImage('mainmenu/mainmenu.png', removebg=False),
+                         'play': utils.LoadScaledImage('mainmenu/playhover.png', removebg=False),
+                         'leaderboard': utils.LoadScaledImage('mainmenu/leaderboardhover.png', removebg=False),
+                         'settings': utils.LoadScaledImage('mainmenu/settingshover.png', removebg=False),
+                         'quit': utils.LoadScaledImage('mainmenu/quithover.png', removebg=False)},
             'red': utils.LoadScaledImage('birds/red.png'),
             'yellow': utils.LoadScaledImage('birds/yellow.png'),
             'blue': utils.LoadScaledImage('birds/blue.png'),
@@ -36,11 +40,11 @@ class Game:
             'wood': {'wood100': utils.LoadScaledImage('blocks/wood100.png', removebg=False),
                  'wood75': utils.LoadScaledImage('blocks/wood75.png', removebg=False),
                  'wood50': utils.LoadScaledImage('blocks/wood50.png', removebg=False),
-                 'wood25': utils.LoadScaledImage('blocks/wood25.png', removebg=False),},
+                 'wood25': utils.LoadScaledImage('blocks/wood25.png', removebg=False)},
             'stone': {'stone100': utils.LoadScaledImage('blocks/stone100.png', removebg=False),
                   'stone75': utils.LoadScaledImage('blocks/stone75.png', removebg=False),
                   'stone50': utils.LoadScaledImage('blocks/stone50.png', removebg=False),
-                  'stone25': utils.LoadScaledImage('blocks/stone25.png', removebg=False),},
+                  'stone25': utils.LoadScaledImage('blocks/stone25.png', removebg=False)},
         }
 
         self.filereadhelper = {
@@ -72,8 +76,14 @@ class Game:
         self.gamerunning = False
         self.someonewon = False
         self.loadingscreen = True
+        self.mainmenu = False
         self.winner_index = -1
         self.gamefont = pygame.font.Font("data/font/PixelifySans-VariableFont_wght.ttf", 36)
+        self.hoversound = pygame.mixer.Sound("data/audio/hover.wav")
+        self.hoversound.set_volume(1.0)
+        self.hovering = False
+        self.jumping_bird = BirdModule.Bird(self, 'red', (1440, 0), (50, 50))
+        
 
     def run(self):
         while True:
@@ -87,7 +97,7 @@ class Game:
                 if milpassed / 1000 - self.game_ticks / 1000 < 10:
                     self.screen.blit(self.images['loadingscreen'], (0,0))
                     self.screen.blit(self.images['ground'], self.groundrect)
-                    barlength = min(500 * 8350/(7.33*1000), 500 * milpassed / ((7.33) * 1000))
+                    barlength = min(500 * 8350/(7.33*1000), 528 * milpassed / ((7.33) * 1000))
                     IntroLoadingBar = utils.LoadScaledImage("loadingbar.png", scaling_dim=(barlength, 46))
                     IntroLoadingBar_rect = IntroLoadingBar.get_rect()
                     # IntroLoadingBar_rect.midleft = (IntroLoadingBarBackground_rect.midleft[0] + 10, IntroLoadingBarBackground_rect.midleft[1])
@@ -99,15 +109,76 @@ class Game:
 
                     if not pygame.mixer.music.get_busy():
                         pygame.mixer.music.load('data/audio/loading_screen.wav')
-                        pygame.mixer.music.set_volume(1)
+                        pygame.mixer.music.set_volume(0.5)
                         pygame.mixer.music.play()
 
                     if milpassed / 1000 - self.game_ticks / 1000 > 9:
                         self.loadingscreen = False
-                        self.gamerunning = True
+                        self.mainmenu = True
 
                     pygame.display.update()
                     self.clock.tick(60)
+
+            
+            while self.mainmenu:
+                for event in pygame.event.get():
+                    # Quit Game
+                    if event.type == pygame.QUIT:
+                        utils.QuitGame()
+
+                self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
+                hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse)
+
+                self.screen.blit(self.images['mainmenu'][hoverbuttonlist[0]], (0, 0))
+                self.screen.blit(self.images['ground'], self.groundrect)
+
+                if not pygame.mixer.music.get_busy():
+                    pygame.mixer.music.load('data/audio/theme.mp3')
+                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.play()
+
+                if hoverbuttonlist[1] and not self.hovering:
+                    self.hovering = True
+                    self.hoversound.play()
+                    self.jumping_bird.pos = [hoverbuttonlist[2], 447]
+                    self.jumping_bird.type = hoverbuttonlist[3]
+                    self.jumping_bird.velocity[1] = -6
+
+                if not hoverbuttonlist[1]:
+                    self.hovering = False
+                    self.jumping_bird.pos = [1440, 0]
+                    self.screen.blit(self.images['red'], (314, 447))
+                    self.screen.blit(self.images['blue'], (514, 447))
+                    self.screen.blit(self.images['yellow'], (714, 447))
+                    self.screen.blit(self.images['bomb'], (914, 447))
+
+                if self.hovering:
+                    if (self.jumping_bird.pos[1] > 447):
+                        self.jumping_bird.velocity[1] = 0
+                        self.jumping_bird.pos[1] = 447
+                    self.jumping_bird.update()
+                    self.jumping_bird.render(self.screen)
+                    birdstoblit = ['red', 'blue', 'yellow', 'bomb']
+                    positions = {'red': 314,
+                                 'blue': 514,
+                                 'yellow': 714,
+                                 'bomb': 914
+                    }
+                    birdstoblit.remove(hoverbuttonlist[3])
+                    for bird in birdstoblit:
+                        self.screen.blit(self.images[bird], (positions[bird], 447))
+
+                if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'play'):
+                    self.gamerunning = True
+                    self.mainmenu = False
+
+                if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'quit'):
+                    utils.QuitGame()
+
+                pygame.display.update()
+                self.clock.tick(60)
+
+
             while self.someonewon:
                 for event in pygame.event.get():
                                     # Quit Game
@@ -120,6 +191,8 @@ class Game:
                 self.screen.blit(text_surface, text_rect)
                 pygame.display.update()
                 self.clock.tick(60)
+
+
             while self.gamerunning:
                 for event in pygame.event.get():
                     # Quit Game
@@ -265,7 +338,7 @@ class Game:
 
                 if not pygame.mixer.music.get_busy():
                         pygame.mixer.music.load('data/audio/theme.mp3')
-                        pygame.mixer.music.set_volume(1)
+                        pygame.mixer.music.set_volume(0.5)
                         pygame.mixer.music.play(-1)
 
                 pygame.display.update()

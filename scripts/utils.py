@@ -112,3 +112,18 @@ def printWaitingList(game):
         game.screen.blit(game.images[game.birds_waiting[0][j]], (400 + 70*j, 660))
     for j in range(4):
         game.screen.blit(game.images[game.birds_waiting[1][j]], (990 - 70*j, 660))
+
+def between(x, lower, upper, inclusive=True):
+    return lower <= x <= upper if inclusive else lower < x < upper
+
+def hoverbutton(xmouse, ymouse):
+    if (between(xmouse, 320, 420) and between(ymouse, 498, 598)):
+        return ['play', True, 314, 'red']
+    elif (between(xmouse, 520, 620) and between(ymouse, 498, 598)):
+        return ['leaderboard', True, 514, 'blue']
+    elif (between(xmouse, 720, 820) and between(ymouse, 498, 598)):
+        return ['settings', True, 714, 'yellow']
+    elif (between(xmouse, 920, 1020) and between(ymouse, 498, 598)):
+        return ['quit', True, 914, 'bomb']
+    else:
+        return ['bg', False]
