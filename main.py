@@ -19,7 +19,23 @@ class Game:
         self.clock = pygame.time.Clock()
         self.game_bg = utils.LoadScaledImage('game_bg.png')
 
+        self.sfx = {
+            'slingshot': pygame.mixer.Sound("data/audio/slingshot.mp3"),
+            'redlaunch': pygame.mixer.Sound("data/audio/redlaunch.wav"),
+            'bluelaunch': pygame.mixer.Sound("data/audio/bluelaunch.wav"),
+            'bluepower': pygame.mixer.Sound("data/audio/bluepower.wav"),
+            'yellowlaunch': pygame.mixer.Sound("data/audio/yellowlaunch.wav"),
+            'yellowpower': pygame.mixer.Sound("data/audio/yellowpower.wav"),
+            'bomblaunch': pygame.mixer.Sound("data/audio/bomblaunch.wav"),
+            'bombpower': pygame.mixer.Sound("data/audio/bombpower.wav")
+        }
+
+        for value in self.sfx.values():
+            value.set_volume(0.5)
+
         self.images = {
+            'cloudbig': utils.LoadScaledImage('cloudbig.png', removebg=True),
+            'cloudsmall': utils.LoadScaledImage('cloudsmall.png', removebg=True),
             'loadingscreen': utils.LoadScaledImage('loadingbg.png', removebg=False),
             'mainmenu': {'bg': utils.LoadScaledImage('mainmenu/mainmenu.png', removebg=False),
                          'play': utils.LoadScaledImage('mainmenu/playhover.png', removebg=False),
@@ -94,8 +110,8 @@ class Game:
         self.player1_active = True
         self.towers = [TowerModule.Tower(self, (20, 210), 'data/tower1.txt'), TowerModule.Tower(self, (1220, 210), 'data/tower2.txt')]
         self.loadingscreen = False
-        self.mainmenu = True
-        self.modeselect = False
+        self.mainmenu = False
+        self.modeselect = True
         self.leaderboardselect = False
         self.leaderboard = False
         self.enter_name_screen_active = False
@@ -113,9 +129,13 @@ class Game:
         self.name_entry_active = [False, False]
         self.names_are_empty = [True, True, False] # 3rd boolean value indicates continue once pressed or not
         self.leaderboardfile = open('data/leaderboard.txt', 'a')
+        self.wind = True
+        self.windeffect = 0
         
 
     def run(self):
+        self.windeffect = 0
+
         while True:
             self.game_ticks = pygame.time.get_ticks()
             while self.loadingscreen:
@@ -154,7 +174,6 @@ class Game:
                     # Quit Game
                     if event.type == pygame.QUIT:
                         utils.QuitGame()
-
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
                 hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'mainmenu')
 
@@ -291,6 +310,7 @@ class Game:
                 if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'back'):
                     self.leaderboardselect = True
                     self.leaderboard = False
+                    self.mode = None
                     self.time_for_delay = pygame.time.get_ticks()
 
                 pygame.display.update()
@@ -389,7 +409,7 @@ class Game:
                     self.screen.blit(self.images['ground'], self.groundrect)
 
                     if pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'continue':
-                        if not self.names_are_empty[0] and not self.names_are_empty[1] and len(self.player_names[0]) < 15 and len(self.player_names[1]) < 15:
+                        if not self.names_are_empty[0] and not self.names_are_empty[1] and len(self.player_names[0]) < 15 and len(self.player_names[1]) < 15 and self.player_names[0] != self.player_names[1]:
                             self.modeselect = True
                             self.enter_name_screen_active = False
                             self.time_for_delay = pygame.time.get_ticks()
@@ -403,6 +423,10 @@ class Game:
                         if not self.player_names[1]:
                             emptyerrortext2 = self.gamefont.render('PLAYER NAME 2 CANNOT BE EMPTY!', True, (255, 0, 0))
                             self.screen.blit(emptyerrortext2, (485, 419))
+                        if self.player_names[0] and self.player_names[1] and len(self.player_names[0]) < 15 and len(self.player_names[1]) < 15:
+                            if self.player_names[0] == self.player_names[1]:
+                                errortext3 = self.gamefont.render('PLAYER NAMES SHOULD BE DIFFERENT!', True, (255, 0, 0))
+                                self.screen.blit(errortext3, (420, 302))
                         if self.name_entry_active[0] or self.name_entry_active[1]:
                             self.names_are_empty[2] = False
 
@@ -483,10 +507,14 @@ class Game:
                     # Check mouse pressed in sling 1 area when player 1 active
                     if (pygame.mouse.get_pressed()[0] and self.x_mouse > 230 and
                         self.x_mouse < 430 and self.y_mouse > 430 and self.y_mouse < 630 and self.player1_active):
+                        if not self.mouse_pressed:
+                            self.sfx['slingshot'].play()
                         self.mouse_pressed = True
                     # Check mouse pressed in sling 2 area when player 2 active
                     if (pygame.mouse.get_pressed()[0] and self.x_mouse > 1060 and
                         self.x_mouse < 1260 and self.y_mouse > 430 and self.y_mouse < 630 and not self.player1_active):
+                        if not self.mouse_pressed:
+                            self.sfx['slingshot'].play()
                         self.mouse_pressed = True
                     # Release new bird for current player
                     if (event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.mouse_pressed):
@@ -504,13 +532,27 @@ class Game:
                         bird.velocity[0] = -self.mouse_distance[player_index] * math.cos(self.angle[player_index]) * 0.37
                         bird.velocity[1] = -self.mouse_distance[player_index] * math.sin(self.angle[player_index]) * 0.37
                         self.birds[player_index].append(bird)
+                        self.sfx[self.current_bird[player_index] + 'launch'].play()
                         utils.NextBirdGenerator(self)
                         self.number_of_birds[player_index] += 1
                         self.player1_active = not self.player1_active
+                    if (event.type == pygame.MOUSEBUTTONDOWN and event.button == 1):
+                        for bird in self.birds[0]:
+                            if not bird.power_activated and bird.health > 0:
+                                bird.activate_power(0, self)
+                        for bird in self.birds[1]:
+                            if not bird.power_activated and bird.health > 0:
+                                bird.activate_power(0, self)
 
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
 
+                self.windeffect = 100*math.sin(pygame.time.get_ticks()/1000) if self.wind else 0
+
                 self.screen.blit(self.game_bg, (0,0))
+                self.screen.blit(self.images['cloudbig'], (167 + self.windeffect, 158))
+                self.screen.blit(self.images['cloudbig'], (1379 + self.windeffect, 360))
+                self.screen.blit(self.images['cloudsmall'], (65 + self.windeffect, 640))
+                self.screen.blit(self.images['cloudsmall'], (1109 + self.windeffect, 562))
                 self.screen.blit(self.images['ground'], self.groundrect)
                 self.screen.blit(self.images['sling1'], (302, 510))
                 self.screen.blit(self.images['sling2'], (1070, 510))
@@ -543,7 +585,7 @@ class Game:
 
                         alpha = max(255 - i * 6, 0)  # gradually decreasing alpha
                         dot_surface = pygame.Surface((16, 16), pygame.SRCALPHA)
-                        pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
+                        # pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
                         self.screen.blit(dot_surface, (x - 8, y - 8))
                 else:
                     if time.time()*1000 - self.t1[0] > 300:
@@ -576,7 +618,7 @@ class Game:
 
                         alpha = max(255 - i * 6, 0)  # gradually decreasing alpha
                         dot_surface = pygame.Surface((16, 16), pygame.SRCALPHA)
-                        pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
+                        # pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
                         self.screen.blit(dot_surface, (x - 8, y - 8))
                 else:
                     if time.time()*1000 - self.t1[1] > 300:
@@ -588,6 +630,7 @@ class Game:
                 for bird in self.birds[0]:
                     if bird.collided and time.time() - bird.collidingtime > 3:
                         self.birds[0].pop(self.birds[0].index(bird))
+
                     if self.groundrect.colliderect(pygame.Rect(*bird.pos, *bird.size)):
                         bird.health -= 1
                         if (not bird.collided):

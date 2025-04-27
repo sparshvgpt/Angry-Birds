@@ -34,9 +34,9 @@ class Tower:
             damagedfromfirstcollision = None
             if mindistblock and bird.rect.colliderect(mindistblock.rect):
                 damagedfromfirstcollision = mindistblock.check_collision(self.game, bird, False)
-            if mindistblock2 != mindistblock and abs(mindistfromblock2 - mindistfromblock) < 1000:
-                if (damagedfromfirstcollision): bird.health += 1
-                mindistblock2.check_collision(self.game, bird, True)
+            # if mindistblock2 != mindistblock and abs(mindistfromblock2 - mindistfromblock) < 1000:
+            #     if (damagedfromfirstcollision): bird.health += 1
+            #     mindistblock2.check_collision(self.game, bird, True)
 
     def checkifdestroyed(self):
         towerdestroyed = [True, True]
