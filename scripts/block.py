@@ -16,14 +16,16 @@ class Block:
         if not bird.onground and bird.rect.colliderect(self.rect):
             if (bird.health > 0): 
                 if (bird.power_activated):
-                    if (bird.type == 'blue'):
-                        self.health -= bird.damage*2 if self.block_type == 'ice' else bird.damage
+                    if (bird.type == 'red'):
+                        self.health -= bird.damage*2
+                    elif (bird.type == 'blue'):
+                        self.health -= bird.damage if self.block_type == 'ice' else bird.damage
                     elif (bird.type == 'yellow'):
                         self.health -= bird.damage*4 if self.block_type == 'wood' else 2*bird.damage
                 elif ((bird.type == 'yellow' and self.block_type == 'wood') or (bird.type == 'blue' and self.block_type == 'ice') or (bird.type == 'bomb' and self.block_type == 'stone')):
                     self.health -= 2*bird.damage
                 elif (bird.type == 'red'):
-                    self.health -= bird.damage*1.2
+                    self.health -= bird.damage*2
                 else:
                     self.health -= bird.damage
                 bird.health -= 1

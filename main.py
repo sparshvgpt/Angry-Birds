@@ -17,7 +17,8 @@ class Game:
         self.screen = pygame.display.set_mode((1440, 810))
 
         self.clock = pygame.time.Clock()
-        self.game_bg = utils.LoadScaledImage('game_bg.png')
+        self.game_bg = {'bg': {'day': utils.LoadScaledImage('bg.png', removebg=False), 'night': utils.LoadScaledImage('bgnight.png', removebg=False)},
+                        'mainmenu': {'day': utils.LoadScaledImage('mainmenuhover.png', removebg=False), 'night': utils.LoadScaledImage('mainmenuhovernight.png', removebg=False)}}
 
         self.sfx = {
             'slingshot': pygame.mixer.Sound("data/audio/slingshot.mp3"),
@@ -34,33 +35,38 @@ class Game:
             value.set_volume(0.5)
 
         self.images = {
-            'cloudbig': utils.LoadScaledImage('cloudbig.png', removebg=True),
-            'cloudsmall': utils.LoadScaledImage('cloudsmall.png', removebg=True),
+            'tick': utils.LoadScaledImage('tick.png', removebg=False),
+            'cloudbig': utils.LoadScaledImage('cloudbig.png', removebg=True, bgcolorkey=(60, 188, 252)),
+            'cloudsmall': utils.LoadScaledImage('cloudsmall.png', removebg=True, bgcolorkey=(60, 188, 252)),
             'loadingscreen': utils.LoadScaledImage('loadingbg.png', removebg=False),
-            'mainmenu': {'bg': utils.LoadScaledImage('mainmenu/mainmenu.png', removebg=False),
-                         'play': utils.LoadScaledImage('mainmenu/playhover.png', removebg=False),
-                         'leaderboard': utils.LoadScaledImage('mainmenu/leaderboardhover.png', removebg=False),
-                         'settings': utils.LoadScaledImage('mainmenu/settingshover.png', removebg=False),
-                         'quit': utils.LoadScaledImage('mainmenu/quithover.png', removebg=False)},
-            'modeselect': {'bg': utils.LoadScaledImage('modeselect/modeselect.png', removebg=False),
-                           'mainmenu': utils.LoadScaledImage('modeselect/mainmenuhover.png', removebg=False),
-                           'one': utils.LoadScaledImage('modeselect/onetowerhover.png', removebg=False),
-                           'two': utils.LoadScaledImage('modeselect/twotowerhover.png', removebg=False)},
-            'leaderboardselect': {'bg': utils.LoadScaledImage('leaderboardselect/bg.png', removebg=False),
-                                  'one': utils.LoadScaledImage('leaderboardselect/one.png', removebg=False),
-                                  'two': utils.LoadScaledImage('leaderboardselect/two.png', removebg=False),
-                                  'back': utils.LoadScaledImage('leaderboardselect/back.png', removebg=False)},
-            'leaderboard': {1: {'bg': utils.LoadScaledImage('leaderboardone/bg.png', removebg=False), 'back': utils.LoadScaledImage('leaderboardone/back.png', removebg=False)},
-                            2: {'bg': utils.LoadScaledImage('leaderboardtwo/bg.png', removebg=False), 'back': utils.LoadScaledImage('leaderboardtwo/back.png', removebg=False)}},
-            'entername': {'none': utils.LoadScaledImage('enterplayername/none.png', removebg=False),
-                          '1': utils.LoadScaledImage('enterplayername/1.png', removebg=False),
-                          '2': utils.LoadScaledImage('enterplayername/2.png', removebg=False),
-                          'continue': utils.LoadScaledImage('enterplayername/continue.png', removebg=False),
-                          '1continue': utils.LoadScaledImage('enterplayername/1continue.png', removebg=False),
-                          '2continue': utils.LoadScaledImage('enterplayername/2continue.png', removebg=False),
-                          'mainmenu': utils.LoadScaledImage('enterplayername/mainmenu.png', removebg=False),
-                          '1mainmenu': utils.LoadScaledImage('enterplayername/1mainmenu.png', removebg=False),
-                          '2mainmenu': utils.LoadScaledImage('enterplayername/2mainmenu.png', removebg=False)},
+            'mainmenu': {'bg': {'day': utils.LoadScaledImage('mainmenu/mainmenu.png', removebg=False), 'night': utils.LoadScaledImage('mainmenu/mainmenunight.png', removebg=False)},
+                        'play': {'day': utils.LoadScaledImage('mainmenu/playhover.png', removebg=False), 'night': utils.LoadScaledImage('mainmenu/playhovernight.png', removebg=False)},
+                        'leaderboard': {'day': utils.LoadScaledImage('mainmenu/leaderboardhover.png', removebg=False), 'night': utils.LoadScaledImage('mainmenu/leaderboardhovernight.png', removebg=False)},
+                        'settings': {'day': utils.LoadScaledImage('mainmenu/settingshover.png', removebg=False), 'night': utils.LoadScaledImage('mainmenu/settingshovernight.png', removebg=False)},
+                        'quit': {'day': utils.LoadScaledImage('mainmenu/quithover.png', removebg=False), 'night': utils.LoadScaledImage('mainmenu/quithovernight.png', removebg=False)}},
+            'modeselect': {'bg': {'day': utils.LoadScaledImage('modeselect/modeselect.png', removebg=False), 'night': utils.LoadScaledImage('modeselect/modeselectnight.png', removebg=False)},
+                        'mainmenu': {'day': utils.LoadScaledImage('modeselect/mainmenuhover.png', removebg=False), 'night': utils.LoadScaledImage('modeselect/mainmenuhovernight.png', removebg=False)},
+                        'one': {'day': utils.LoadScaledImage('modeselect/onetowerhover.png', removebg=False), 'night': utils.LoadScaledImage('modeselect/onetowerhovernight.png', removebg=False)},
+                        'two': {'day': utils.LoadScaledImage('modeselect/twotowerhover.png', removebg=False), 'night': utils.LoadScaledImage('modeselect/twotowerhovernight.png', removebg=False)}},
+            'leaderboardselect': {'bg': {'day': utils.LoadScaledImage('leaderboardselect/bg.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardselect/bgnight.png', removebg=False)},
+                                'one': {'day': utils.LoadScaledImage('leaderboardselect/one.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardselect/onenight.png', removebg=False)},
+                                'two': {'day': utils.LoadScaledImage('leaderboardselect/two.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardselect/twonight.png', removebg=False)},
+                                'back': {'day': utils.LoadScaledImage('leaderboardselect/back.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardselect/backnight.png', removebg=False)}},
+            'leaderboard': {1: {'bg': {'day': utils.LoadScaledImage('leaderboardone/bg.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardone/bgnight.png', removebg=False)}, 
+                                'back': {'day': utils.LoadScaledImage('leaderboardone/back.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardone/backnight.png', removebg=False)}},
+                            2: {'bg': {'day': utils.LoadScaledImage('leaderboardtwo/bg.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardtwo/bgnight.png', removebg=False)},
+                                'back': {'day': utils.LoadScaledImage('leaderboardtwo/back.png', removebg=False), 'night': utils.LoadScaledImage('leaderboardtwo/backnight.png', removebg=False)}}},
+            'settings': {'bg': {'day': utils.LoadScaledImage('settings/bg.png', removebg=False), 'night': utils.LoadScaledImage('settings/bgnight.png', removebg=False)},
+                         'back': {'day': utils.LoadScaledImage('settings/back.png', removebg=False), 'night': utils.LoadScaledImage('settings/backnight.png', removebg=False)}},
+            'entername': {'none': {'day': utils.LoadScaledImage('enterplayername/none.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/nonenight.png', removebg=False)},
+                        '1': {'day': utils.LoadScaledImage('enterplayername/1.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/1night.png', removebg=False)},
+                        '2': {'day': utils.LoadScaledImage('enterplayername/2.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/2night.png', removebg=False)},
+                        'continue': {'day': utils.LoadScaledImage('enterplayername/continue.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/continuenight.png', removebg=False)},
+                        '1continue': {'day': utils.LoadScaledImage('enterplayername/1continue.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/1continuenight.png', removebg=False)},
+                        '2continue': {'day': utils.LoadScaledImage('enterplayername/2continue.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/2continuenight.png', removebg=False)},
+                        'mainmenu': {'day': utils.LoadScaledImage('enterplayername/mainmenu.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/mainmenunight.png', removebg=False)},
+                        '1mainmenu': {'day': utils.LoadScaledImage('enterplayername/1mainmenu.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/1mainmenunight.png', removebg=False)},
+                        '2mainmenu': {'day': utils.LoadScaledImage('enterplayername/2mainmenu.png', removebg=False), 'night': utils.LoadScaledImage('enterplayername/2mainmenunight.png', removebg=False)}},
             'red': utils.LoadScaledImage('birds/red.png'),
             'yellow': utils.LoadScaledImage('birds/yellow.png'),
             'blue': utils.LoadScaledImage('birds/blue.png'),
@@ -69,17 +75,17 @@ class Game:
             'sling1': utils.LoadScaledImage('sling1.png', removebg=False),
             'sling2': utils.LoadScaledImage('sling2.png', removebg=False),
             'ice': {'ice100': utils.LoadScaledImage('blocks/ice100.png', removebg=False),
-                'ice75': utils.LoadScaledImage('blocks/ice75.png', removebg=False),
-                'ice50': utils.LoadScaledImage('blocks/ice50.png', removebg=False),
-                'ice25': utils.LoadScaledImage('blocks/ice25.png', removebg=False),},
+                    'ice75': utils.LoadScaledImage('blocks/ice75.png', removebg=False),
+                    'ice50': utils.LoadScaledImage('blocks/ice50.png', removebg=False),
+                    'ice25': utils.LoadScaledImage('blocks/ice25.png', removebg=False),},
             'wood': {'wood100': utils.LoadScaledImage('blocks/wood100.png', removebg=False),
-                 'wood75': utils.LoadScaledImage('blocks/wood75.png', removebg=False),
-                 'wood50': utils.LoadScaledImage('blocks/wood50.png', removebg=False),
-                 'wood25': utils.LoadScaledImage('blocks/wood25.png', removebg=False)},
+                    'wood75': utils.LoadScaledImage('blocks/wood75.png', removebg=False),
+                    'wood50': utils.LoadScaledImage('blocks/wood50.png', removebg=False),
+                    'wood25': utils.LoadScaledImage('blocks/wood25.png', removebg=False)},
             'stone': {'stone100': utils.LoadScaledImage('blocks/stone100.png', removebg=False),
-                  'stone75': utils.LoadScaledImage('blocks/stone75.png', removebg=False),
-                  'stone50': utils.LoadScaledImage('blocks/stone50.png', removebg=False),
-                  'stone25': utils.LoadScaledImage('blocks/stone25.png', removebg=False)},
+                    'stone75': utils.LoadScaledImage('blocks/stone75.png', removebg=False),
+                    'stone50': utils.LoadScaledImage('blocks/stone50.png', removebg=False),
+                    'stone25': utils.LoadScaledImage('blocks/stone25.png', removebg=False)},
             'nametile': utils.LoadScaledImage('nametile.png')
         }
 
@@ -89,7 +95,7 @@ class Game:
             'S': 'stone'
         }
 
-        self.groundrect = self.images['ground'].get_rect(topleft=(0, self.screen.get_height() - 100))
+        self.groundrect = pygame.Rect(0, self.screen.get_height() - 100, 1440, 100)
 
         self.sling_x1, self.sling_y1 = [310, 1130], [545, 545]
         self.sling_x2, self.sling_y2 = [360, 1075], [545, 545]
@@ -107,13 +113,14 @@ class Game:
         self.t1 = [0, 0]
         self.t2 = [0, 0]
         self.mouse_distance = [0, 0]
-        self.player1_active = True
+        self.player1_active = np.random.choice([True, False])
         self.towers = [TowerModule.Tower(self, (20, 210), 'data/tower1.txt'), TowerModule.Tower(self, (1220, 210), 'data/tower2.txt')]
-        self.loadingscreen = False
+        self.loadingscreen = True
         self.mainmenu = False
-        self.modeselect = True
+        self.modeselect = False
         self.leaderboardselect = False
         self.leaderboard = False
+        self.settings = False
         self.enter_name_screen_active = False
         self.gamerunning = False
         self.someonewon = False
@@ -129,8 +136,11 @@ class Game:
         self.name_entry_active = [False, False]
         self.names_are_empty = [True, True, False] # 3rd boolean value indicates continue once pressed or not
         self.leaderboardfile = open('data/leaderboard.txt', 'a')
-        self.wind = True
+        self.wind = False
         self.windeffect = 0
+        self.backgroundmode = 'day'
+        self.bgm = True
+        self.trajdots = False
         
 
     def run(self):
@@ -146,7 +156,7 @@ class Game:
                 milpassed = pygame.time.get_ticks()
                 if milpassed / 1000 - self.game_ticks / 1000 < 10:
                     self.screen.blit(self.images['loadingscreen'], (0,0))
-                    self.screen.blit(self.images['ground'], self.groundrect)
+                    self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
                     barlength = min(500 * 8350/(7.33*1000), 528 * milpassed / ((7.33) * 1000))
                     IntroLoadingBar = utils.LoadScaledImage("loadingbar.png", scaling_dim=(barlength, 46))
                     IntroLoadingBar_rect = IntroLoadingBar.get_rect()
@@ -164,6 +174,7 @@ class Game:
                     if milpassed / 1000 - self.game_ticks / 1000 > 8:
                         self.loadingscreen = False
                         self.mainmenu = True
+                        self.time_for_delay = pygame.time.get_ticks()
 
                     pygame.display.update()
                     self.clock.tick(60)
@@ -177,12 +188,12 @@ class Game:
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
                 hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'mainmenu')
 
-                self.screen.blit(self.images['mainmenu'][hoverbuttonlist[0]], (0, 0))
-                self.screen.blit(self.images['ground'], self.groundrect)
+                self.screen.blit(self.images['mainmenu'][hoverbuttonlist[0]][self.backgroundmode], (0, 0))
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
 
                 if not pygame.mixer.music.get_busy():
                     pygame.mixer.music.load('data/audio/theme.mp3')
-                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.set_volume(0.5 if self.bgm else 0)
                     pygame.mixer.music.play()
 
                 if hoverbuttonlist[1] and not self.hovering:
@@ -216,18 +227,26 @@ class Game:
                     for bird in birdstoblit:
                         self.screen.blit(self.images[bird], (positions[bird], 447))
 
-                if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'play'):
-                    self.mainmenu = False
-                    self.enter_name_screen_active = True
-                    self.time_for_delay = pygame.time.get_ticks()
+                if pygame.time.get_ticks() - self.time_for_delay > 500:
+                    if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'play'):
+                        self.mainmenu = False
+                        self.enter_name_screen_active = True
+                        self.time_for_delay = pygame.time.get_ticks()
+                        self.player_names = ['', '']
+                        self.name_entry_active = [False, False]
 
-                if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'leaderboard'):
-                    self.mainmenu = False
-                    self.leaderboardselect = True
-                    self.time_for_delay = pygame.time.get_ticks()
+                    if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'leaderboard'):
+                        self.mainmenu = False
+                        self.leaderboardselect = True
+                        self.time_for_delay = pygame.time.get_ticks()
 
-                if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'quit'):
-                    utils.QuitGame()
+                    if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'settings'):
+                        self.mainmenu = False
+                        self.settings = True
+                        self.time_for_delay = pygame.time.get_ticks()
+
+                    if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'quit'):
+                        utils.QuitGame()
 
                 pygame.display.update()
                 self.clock.tick(60)
@@ -242,12 +261,12 @@ class Game:
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
                 hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'leaderboardselect')
 
-                self.screen.blit(self.images['leaderboardselect'][hoverbuttonlist[0]], (0, 0))
-                self.screen.blit(self.images['ground'], self.groundrect)
+                self.screen.blit(self.images['leaderboardselect'][hoverbuttonlist[0]][self.backgroundmode], (0, 0))
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
 
                 if not pygame.mixer.music.get_busy():
                     pygame.mixer.music.load('data/audio/theme.mp3')
-                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.set_volume(0.5 if self.bgm else 0)
                     pygame.mixer.music.play()
 
                 if hoverbuttonlist[1] and not self.hovering:
@@ -286,8 +305,8 @@ class Game:
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
                 hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'leaderboard')
 
-                self.screen.blit(self.images['leaderboard'][self.mode][hoverbuttonlist[0]], (0, 0))
-                self.screen.blit(self.images['ground'], self.groundrect)
+                self.screen.blit(self.images['leaderboard'][self.mode][hoverbuttonlist[0]][self.backgroundmode], (0, 0))
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
 
                 for i in range(len(top3list)):
                     nametext = self.gamefont.render(top3list[i][0], True, (0, 0, 0))
@@ -297,7 +316,7 @@ class Game:
 
                 if not pygame.mixer.music.get_busy():
                     pygame.mixer.music.load('data/audio/theme.mp3')
-                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.set_volume(0.5 if self.bgm else 0)
                     pygame.mixer.music.play()
 
                 if hoverbuttonlist[1] and not self.hovering:
@@ -316,6 +335,74 @@ class Game:
                 pygame.display.update()
                 self.clock.tick(60)
 
+            while self.settings:
+                for event in pygame.event.get():
+                    # Quit Game
+                    if event.type == pygame.QUIT:
+                        utils.QuitGame()
+
+                self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
+                hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'settings')
+
+                if hoverbuttonlist[0] == 'back':
+                    self.screen.blit(self.images['settings']['back'][self.backgroundmode], (0, 0))
+                else:
+                    self.screen.blit(self.images['settings']['bg'][self.backgroundmode], (0, 0))
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
+
+                if not pygame.mixer.music.get_busy():
+                    pygame.mixer.music.load('data/audio/theme.mp3')
+                    pygame.mixer.music.set_volume(0.5 if self.bgm else 0)
+                    pygame.mixer.music.play()
+
+                if hoverbuttonlist[1] and not self.hovering:
+                    self.hovering = True
+                    self.hoversound.play()
+
+                if not hoverbuttonlist[1]:
+                    self.hovering = False
+
+                if (pygame.time.get_ticks() - self.time_for_delay > 500):
+                    if pygame.mouse.get_pressed()[0] and not self.mouse_pressed:
+                        self.mouse_pressed = True
+                        if hoverbuttonlist[0] == 'back':
+                            self.mainmenu = True
+                            self.settings = False
+                            self.time_for_delay = pygame.time.get_ticks()
+                            self.mouse_pressed = False
+                        if hoverbuttonlist[0] == 'bgm':
+                            self.bgm = not self.bgm
+                        if hoverbuttonlist[0] == 'day':
+                            self.backgroundmode = 'day'
+                        if hoverbuttonlist[0] == 'night':
+                            self.backgroundmode = 'night'
+                        if hoverbuttonlist[0] == 'wind':
+                            self.wind = not self.wind
+                        if hoverbuttonlist[0] == 'dots':
+                            self.trajdots = not self.trajdots
+                    if not pygame.mouse.get_pressed()[0]:
+                        self.mouse_pressed = False
+
+                if not self.bgm: 
+                    pygame.mixer.music.set_volume(0)
+                else: 
+                    self.screen.blit(self.images['tick'], (975, 300))
+                    pygame.mixer.music.set_volume(0.5)
+
+                if self.backgroundmode == 'day':
+                    self.screen.blit(self.images['tick'], (775, 370))
+                else:
+                    self.screen.blit(self.images['tick'], (975, 370))
+
+                if self.wind:
+                    self.screen.blit(self.images['tick'], (975, 440))
+
+                if self.trajdots:
+                    self.screen.blit(self.images['tick'], (975, 510))
+
+                pygame.display.update()
+                self.clock.tick(60)
+
             while self.enter_name_screen_active:
                 for event in pygame.event.get():
                     # Quit Game
@@ -324,7 +411,7 @@ class Game:
 
                 if not pygame.mixer.music.get_busy():
                     pygame.mixer.music.load('data/audio/theme.mp3')
-                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.set_volume(0.5 if self.bgm else 0)
                     pygame.mixer.music.play()
                 
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
@@ -337,12 +424,12 @@ class Game:
                 if not hoverbuttonlist[1]:
                     self.hovering = False
 
-                self.screen.blit(self.images['entername']['none'], (0,0))
-                self.screen.blit(self.images['ground'], self.groundrect)
+                self.screen.blit(self.images['entername']['none'][self.backgroundmode], (0,0))
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
 
                 if not self.name_entry_active[0] and not self.name_entry_active[1]:
                     if hoverbuttonlist[1]:
-                        self.screen.blit(self.images['entername'][hoverbuttonlist[0]], (0, 0))
+                        self.screen.blit(self.images['entername'][hoverbuttonlist[0]][self.backgroundmode], (0, 0))
 
                 if pygame.time.get_ticks() - self.time_for_delay > 500:
                     if pygame.mouse.get_pressed()[0]:
@@ -354,11 +441,11 @@ class Game:
 
                     if self.name_entry_active[0]:
                         if hoverbuttonlist[0] in ['none', '1', '2']:
-                            self.screen.blit(self.images['entername']['1'], (0, 0))
+                            self.screen.blit(self.images['entername']['1'][self.backgroundmode], (0, 0))
                         elif hoverbuttonlist[0] == 'mainmenu':
-                            self.screen.blit(self.images['entername']['1mainmenu'], (0, 0))
+                            self.screen.blit(self.images['entername']['1mainmenu'][self.backgroundmode], (0, 0))
                         elif hoverbuttonlist[0] == 'continue':
-                            self.screen.blit(self.images['entername']['1continue'], (0, 0))
+                            self.screen.blit(self.images['entername']['1continue'][self.backgroundmode], (0, 0))
                         for event in pygame.event.get():
                             # Quit Game
                             if event.type == pygame.QUIT:
@@ -371,11 +458,11 @@ class Game:
                         
                     if self.name_entry_active[1]:
                         if hoverbuttonlist[0] in ['none', '1', '2']:
-                            self.screen.blit(self.images['entername']['2'], (0, 0))
+                            self.screen.blit(self.images['entername']['2'][self.backgroundmode], (0, 0))
                         elif hoverbuttonlist[0] == 'mainmenu':
-                            self.screen.blit(self.images['entername']['2mainmenu'], (0, 0))
+                            self.screen.blit(self.images['entername']['2mainmenu'][self.backgroundmode], (0, 0))
                         elif hoverbuttonlist[0] == 'continue':
-                            self.screen.blit(self.images['entername']['2continue'], (0, 0))
+                            self.screen.blit(self.images['entername']['2continue'][self.backgroundmode], (0, 0))
                         for event in pygame.event.get():
                             # Quit Game
                             if event.type == pygame.QUIT:
@@ -406,7 +493,7 @@ class Game:
                     self.names_are_empty[0] = not bool(self.player_names[0])
                     self.names_are_empty[1] = not bool(self.player_names[1])
 
-                    self.screen.blit(self.images['ground'], self.groundrect)
+                    self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
 
                     if pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'continue':
                         if not self.names_are_empty[0] and not self.names_are_empty[1] and len(self.player_names[0]) < 15 and len(self.player_names[1]) < 15 and self.player_names[0] != self.player_names[1]:
@@ -447,12 +534,12 @@ class Game:
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
                 hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'modeselect')
 
-                self.screen.blit(self.images['modeselect'][hoverbuttonlist[0]], (0, 0))
-                self.screen.blit(self.images['ground'], self.groundrect)
+                self.screen.blit(self.images['modeselect'][hoverbuttonlist[0]][self.backgroundmode], (0, 0))
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
 
                 if not pygame.mixer.music.get_busy():
                     pygame.mixer.music.load('data/audio/theme.mp3')
-                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.set_volume(0.5 if self.bgm else 0)
                     pygame.mixer.music.play()
 
                 if hoverbuttonlist[1] and not self.hovering:
@@ -471,11 +558,13 @@ class Game:
                         self.gamerunning = True
                         self.modeselect = False
                         self.mode = 1
+                        self.time_for_delay = pygame.time.get_ticks()
 
                     if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'two'):
                         self.gamerunning = True
                         self.modeselect = False
                         self.mode = 2
+                        self.time_for_delay = pygame.time.get_ticks()
 
                 pygame.display.update()
                 self.clock.tick(60)
@@ -483,12 +572,38 @@ class Game:
 
             while self.someonewon:
                 for event in pygame.event.get():
-                                    # Quit Game
-                                    if event.type == pygame.QUIT:
-                                        utils.QuitGame()
-                self.screen.blit(self.game_bg, (0,0))
-                self.screen.blit(self.images['ground'], self.groundrect)
+                    # Quit Game
+                    if event.type == pygame.QUIT:
+                        utils.QuitGame()
+
+                self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
+                hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'game')
+
+                self.screen.blit(self.game_bg[hoverbuttonlist[0]][self.backgroundmode], (0,0))
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
                 utils.rendername(self, self.screen, f'{self.player_names[self.winner_index]} won!', self.images['nametile'], (720, 405), 'center')
+
+                if hoverbuttonlist[1] and not self.hovering:
+                    self.hovering = True
+                    self.hoversound.play()
+
+                if not hoverbuttonlist[1]:
+                    self.hovering = False
+
+                if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'mainmenu'):
+                    self.mainmenu = True
+                    self.someonewon = False
+                    self.birds = [[], []]
+                    self.player1_active = True
+                    self.towers = [TowerModule.Tower(self, (20, 210), 'data/tower1.txt'), TowerModule.Tower(self, (1220, 210), 'data/tower2.txt')]
+                    self.winner_index = -1
+                    self.mode = None
+                    self.player_names = ['', '']
+                    self.name_entry_active = [False, False]
+                    self.names_are_empty = [True, True, False] # 3rd boolean value indicates continue once pressed or not
+                    self.leaderboardfile = open('data/leaderboard.txt', 'a')
+                    self.number_of_birds = [0, 0]
+
                 pygame.display.update()
                 self.clock.tick(60)
 
@@ -507,15 +622,27 @@ class Game:
                     # Check mouse pressed in sling 1 area when player 1 active
                     if (pygame.mouse.get_pressed()[0] and self.x_mouse > 230 and
                         self.x_mouse < 430 and self.y_mouse > 430 and self.y_mouse < 630 and self.player1_active):
-                        if not self.mouse_pressed:
-                            self.sfx['slingshot'].play()
-                        self.mouse_pressed = True
+                        opp2birdinair = False
+                        for bird in self.birds[1]:
+                            if bird.health > 0:
+                                opp2birdinair = True
+                                break
+                        if not opp2birdinair:
+                            if not self.mouse_pressed:
+                                self.sfx['slingshot'].play()
+                            self.mouse_pressed = True
                     # Check mouse pressed in sling 2 area when player 2 active
                     if (pygame.mouse.get_pressed()[0] and self.x_mouse > 1060 and
                         self.x_mouse < 1260 and self.y_mouse > 430 and self.y_mouse < 630 and not self.player1_active):
-                        if not self.mouse_pressed:
-                            self.sfx['slingshot'].play()
-                        self.mouse_pressed = True
+                        opp1birdinair = False
+                        for bird in self.birds[0]:
+                            if bird.health > 0:
+                                opp1birdinair = True
+                                break
+                        if not opp1birdinair:
+                            if not self.mouse_pressed:
+                                self.sfx['slingshot'].play()
+                            self.mouse_pressed = True
                     # Release new bird for current player
                     if (event.type == pygame.MOUSEBUTTONUP and event.button == 1 and self.mouse_pressed):
                         player_index = 0 if self.player1_active else 1
@@ -545,21 +672,28 @@ class Game:
                                 bird.activate_power(0, self)
 
                 self.x_mouse, self.y_mouse = pygame.mouse.get_pos()
+                hoverbuttonlist = utils.hoverbutton(self.x_mouse, self.y_mouse, 'game')
 
                 self.windeffect = 100*math.sin(pygame.time.get_ticks()/1000) if self.wind else 0
 
-                self.screen.blit(self.game_bg, (0,0))
+                self.screen.blit(self.game_bg[hoverbuttonlist[0]][self.backgroundmode], (0,0))
                 self.screen.blit(self.images['cloudbig'], (167 + self.windeffect, 158))
                 self.screen.blit(self.images['cloudbig'], (1379 + self.windeffect, 360))
                 self.screen.blit(self.images['cloudsmall'], (65 + self.windeffect, 640))
                 self.screen.blit(self.images['cloudsmall'], (1109 + self.windeffect, 562))
-                self.screen.blit(self.images['ground'], self.groundrect)
+                self.screen.blit(self.images['ground'], (0, self.screen.get_height() - 100))
                 self.screen.blit(self.images['sling1'], (302, 510))
                 self.screen.blit(self.images['sling2'], (1070, 510))
+
+                if pygame.time.get_ticks() - self.time_for_delay < 2000:
+                    if self.player1_active:
+                        utils.rendername(self, self.screen, self.player_names[self.winner_index], self.images['nametile'], (720, 405), 'center')
+                    else:
+                        utils.rendername(self, self.screen, self.player_names[self.winner_index], self.images['nametile'], (720, 405), 'center')
                 
                 # Render player names on screen
-                utils.rendername(self, self.screen, self.player_names[0], self.images['nametile'], (20, 120), 'left')
-                utils.rendername(self, self.screen, self.player_names[1], self.images['nametile'], (1420, 120), 'right')
+                utils.rendername(self, self.screen, self.player_names[0], self.images['nametile'], (20, 153), 'left')
+                utils.rendername(self, self.screen, self.player_names[1], self.images['nametile'], (1420, 153), 'right')
 
                 # Draw not flying birds for player 1
                 if self.mouse_pressed and self.player1_active:
@@ -585,7 +719,8 @@ class Game:
 
                         alpha = max(255 - i * 6, 0)  # gradually decreasing alpha
                         dot_surface = pygame.Surface((16, 16), pygame.SRCALPHA)
-                        # pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
+                        if self.trajdots:
+                            pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
                         self.screen.blit(dot_surface, (x - 8, y - 8))
                 else:
                     if time.time()*1000 - self.t1[0] > 300:
@@ -618,7 +753,8 @@ class Game:
 
                         alpha = max(255 - i * 6, 0)  # gradually decreasing alpha
                         dot_surface = pygame.Surface((16, 16), pygame.SRCALPHA)
-                        # pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
+                        if self.trajdots:
+                            pygame.draw.circle(dot_surface, (255, 255, 255, alpha), (8, 8), 8)
                         self.screen.blit(dot_surface, (x - 8, y - 8))
                 else:
                     if time.time()*1000 - self.t1[1] > 300:
@@ -630,7 +766,11 @@ class Game:
                 for bird in self.birds[0]:
                     if bird.collided and time.time() - bird.collidingtime > 3:
                         self.birds[0].pop(self.birds[0].index(bird))
-
+                        continue
+                    if not utils.between(bird.pos[0], -bird.size[0], self.screen.get_width()) and bird.health > 0:
+                        bird.health -= 1
+                        bird.collided = True
+                        bird.collidingtime = pygame.time.get_ticks()
                     if self.groundrect.colliderect(pygame.Rect(*bird.pos, *bird.size)):
                         bird.health -= 1
                         if (not bird.collided):
@@ -673,7 +813,10 @@ class Game:
                     if bird.collided and time.time() - bird.collidingtime > 3:
                         self.birds[1].pop(self.birds[1].index(bird))
                         continue
-                    
+                    if not utils.between(bird.pos[0], -bird.size[0], self.screen.get_width()) and bird.health > 0:
+                        bird.health -= 1
+                        bird.collided = True
+                        bird.collidingtime = pygame.time.get_ticks()
                     if self.groundrect.colliderect(pygame.Rect(*bird.pos, *bird.size)):
                         bird.health -= 1
                         if (not bird.collided):
@@ -723,12 +866,31 @@ class Game:
 
                 if not pygame.mixer.music.get_busy():
                         pygame.mixer.music.load('data/audio/theme.mp3')
-                        pygame.mixer.music.set_volume(0.5)
+                        pygame.mixer.music.set_volume(0.5 if self.bgm else 0)
                         pygame.mixer.music.play(-1)
+
+                if hoverbuttonlist[1] and not self.hovering:
+                    self.hovering = True
+                    self.hoversound.play()
+
+                if not hoverbuttonlist[1]:
+                    self.hovering = False
+
+                if (pygame.mouse.get_pressed()[0] and hoverbuttonlist[0] == 'mainmenu'):
+                    self.mainmenu = True
+                    self.gamerunning = False
+                    self.birds = [[], []]
+                    self.player1_active = True
+                    self.towers = [TowerModule.Tower(self, (20, 210), 'data/tower1.txt'), TowerModule.Tower(self, (1220, 210), 'data/tower2.txt')]
+                    self.winner_index = -1
+                    self.mode = None
+                    self.player_names = ['', '']
+                    self.name_entry_active = [False, False]
+                    self.names_are_empty = [True, True, False] # 3rd boolean value indicates continue once pressed or not
+                    self.leaderboardfile = open('data/leaderboard.txt', 'a')
+                    self.number_of_birds = [0, 0]
 
                 pygame.display.update()
                 self.clock.tick(60)
 
 Game().run()
-
-# Special thanks to Mani, Tanvi, Garvit and Harshita (testers)

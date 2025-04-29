@@ -9,7 +9,7 @@ def QuitGame():
     sys.exit()
 
 # For loading images with proper scaling
-def LoadScaledImage(path: str, scaling_factor: float = 1.0, scaling_dim: tuple = (0, 0), removebg: bool = True):
+def LoadScaledImage(path: str, scaling_factor: float = 1.0, scaling_dim: tuple = (0, 0), removebg: bool = True, bgcolorkey=(0,0,0)):
     BASE_PATH = 'data/images/'
     image = pygame.image.load(BASE_PATH + path)
     if scaling_dim != (0, 0):
@@ -21,7 +21,7 @@ def LoadScaledImage(path: str, scaling_factor: float = 1.0, scaling_dim: tuple =
     else:
         resized_image = image
     if removebg:
-        resized_image.set_colorkey((0,0,0))
+        resized_image.set_colorkey(bgcolorkey)
     return resized_image
 
 def vector(p0, p1):
@@ -166,6 +166,26 @@ def hoverbutton(xmouse, ymouse, screentype):
     if screentype == 'leaderboard':
         if (between(xmouse, 50, 110) and between(ymouse, 50, 110)):
             return ['back', True]
+        else:
+            return ['bg', False]
+    if screentype == 'settings':
+        if (between(xmouse, 50, 110) and between(ymouse, 50, 110)):
+            return ['back', True]
+        elif (between(xmouse, 975, 1015) and between(ymouse, 300, 340)):
+            return ['bgm', False]
+        elif (between(xmouse, 775, 815) and between(ymouse, 370, 410)):
+            return ['day', False]
+        elif (between(xmouse, 975, 1015) and between(ymouse, 370, 410)):
+            return ['night', False]
+        elif (between(xmouse, 975, 1015) and between(ymouse, 440, 480)):
+            return ['wind', False]
+        elif (between(xmouse, 975, 1015) and between(ymouse, 510, 550)):
+            return ['dots', False]
+        else:
+            return ['bg', False]
+    if screentype == 'game':
+        if (between(xmouse, 50, 110) and between(ymouse, 50, 110)):
+            return ['mainmenu', True]
         else:
             return ['bg', False]
         
